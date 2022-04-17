@@ -1,0 +1,14 @@
+Este é um arquivo de exemplo para
+testar o codificador/decodificador
+Huffman. Este é um arquivo curto
+que não apresenta nunhuma informação
+relevante. Adeus.
+This is an example file to test the
+Huffman encoder/decoder. This is a
+short file that does not hold any
+valuable information. Goodbye.
+Este es un archivo de ejemplo para
+probar el codificador/decodificador
+Huffman. Es un archivo corto que no
+contiene ninguna información valiosa.
+Adiós.
