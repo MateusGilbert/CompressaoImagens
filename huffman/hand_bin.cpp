@@ -117,7 +117,7 @@ void buffer::flush(void){
 
 	while (b_size > n_entries++)
 		buff <<= 1;
-	fwrite(&buff,b_size,1,file);
+	fwrite(&buff,b_size/8,1,file);
 
 	fclose(file);
 
@@ -166,12 +166,12 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 		return 1;
 
 	word dec_buff;
-	unsigned dec_size = sizeof(word)*4;		//sizeof will return sizeof(char*2)
-	unsigned buff_size=4;
+	unsigned dec_size = sizeof(word)*8;		//sizeof will return sizeof(char*2)
+	unsigned buff_size=100;
 	string w_buff = "";
 	huff_node *dec_tree, *cur_pos;
 	unsigned st_pos;
-	char w_op = 'w';
+	bool w_op = true;
 
 	tie(dec_tree,st_pos) = read_header(enc_file);
 
@@ -182,7 +182,7 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 	string end_str = "EOF";
 	bool leave=false;
 	while ( not leave ) {
-		fread(&dec_buff, dec_size, 1, infile);
+		fread(&dec_buff, dec_size/8, 1, infile);
 		for (unsigned i=1; i<=dec_size; i++){
 			string val = "";
 			if (CHECK_BIT(dec_buff, dec_size-i))
@@ -204,20 +204,23 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 				if (val == "EOL")
 					val = '\n';
 				else if (val == "EOF"){
-					val = '\0';
+					/*val = '\0';*/
 					leave = true;
 				}
-				w_buff += val;
+				if (not leave)
+					w_buff += val;
 			}
 
 			if (w_buff.length() == buff_size){
 				ofstream outfile;
-				if (w_op == 'w'){
-					if (FILE *aux_f = fopen(filename.c_str(), "r")){
-						fclose(aux_f);
+				if (w_op){
+					ifstream aux(filename);
+					if (not aux.fail()){
+					/*if (FILE *aux_f = fopen(filename.c_str(), "r")){*/
+						aux.close();
 						remove(filename.c_str());
 					}
-					w_op = 'a';
+					w_op = false;
 				}
 				outfile.open(filename, ios::app);
 				outfile.write(w_buff.c_str(), sizeof(char)*w_buff.length());
@@ -227,7 +230,6 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 		}
 	}
 	fclose(infile);
-	/*infile.close();*/
 
 	if (w_buff != ""){
 		ofstream outfile(filename, ios::app);

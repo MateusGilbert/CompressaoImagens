@@ -20,6 +20,7 @@ int main(int argc, char *argv[]){
 	cout<<"Decompressing "<<filename<<"..."<<endl;
 	huff_decode(decode_name, filename);
 	cout<<"...done! Saved @ "<<decode_name<<endl;
+	cout<<"---------------------------"<<endl;
 
 	return 0;
 }
