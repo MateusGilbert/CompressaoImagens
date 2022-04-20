@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS= -c -Wall
+CFLAGS= -c -Wall -O3
 LFLAGS= -o
 
 .cpp.o:

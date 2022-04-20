@@ -204,7 +204,6 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 				if (val == "EOL")
 					val = '\n';
 				else if (val == "EOF"){
-					/*val = '\0';*/
 					leave = true;
 				}
 				if (not leave)
@@ -216,7 +215,6 @@ int huff_decode(string filename, string enc_file){//; huff_node *huff_code){
 				if (w_op){
 					ifstream aux(filename);
 					if (not aux.fail()){
-					/*if (FILE *aux_f = fopen(filename.c_str(), "r")){*/
 						aux.close();
 						remove(filename.c_str());
 					}
