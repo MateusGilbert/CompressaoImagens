@@ -13,8 +13,7 @@
 using namespace std;
 
 typedef struct node{
-	char val;
-	/*unsigned count=0;*/
+	/*char val;*/
 	struct node *next[No_of_chars];//[No_of_symbols];
 	char table[No_of_symbols];  //char_to_index
 	unsigned char index_to_char[No_of_symbols+1];
@@ -23,8 +22,8 @@ typedef struct node{
 } ctx_node;
 
 vector< ctx_node* > start_model(int=0);
-void ppm_encode(vector< ctx_node* >, string, int);
+void ppm_encode(vector< ctx_node* >, string, int, bool=false);
 void update_model(vector< ctx_node* > ctxs, string, int);
-int* get_cum_freq(ctx_node*,string="");
+int* get_cum_freq(ctx_node*,string="",bool=false);
 
 #endif
