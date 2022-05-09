@@ -16,4 +16,5 @@ o arquivo origem é comprimido utilizando um contexto de comprimento máximo igu
 decompressão, utilizando os mesmos parâmetros do exemplo anterior.
 
 obs.: quando -v é selecionado, o programa escreve uma mensagem a cada 10k bytes processados para indicar que a compressão ainda está ocorrendo.
-obs2.: quando -e é selecionado, o princípio da exclusão é utilizado na compressão.
+
+obs2.: quando -e é selecionado, o princípio da exclusão é utilizado na compressão. Isso implica em uma compressão maior, mas o programa executa a compressão/descompressão por mais tempo.
