@@ -10,14 +10,37 @@ int
 main(int argc, char *argv[])
 {  
 	if (argc < 2){
-	 cout<<"Usage: "<<argv[0]<<" <file> [<n_contexts>]"<<endl;
-	 return 1;
+		help_exit:
+			cerr<<"Usage: "<<argv[0]<<" -[options] [file] [n_contexts]"<<endl;
+			cerr<<"Options:"<<endl;
+			cerr<<"  -h, -H   Display this help and exit."<<endl;
+			cerr<<"  -v, -V   Verbose, print a message each time the program process 10k chars."<<endl;
+			cerr<<"  -e, -E   Encode using the exclusion principle."<<endl;
+		return 1;
 	}
 
 	int n_ctx = 0;//-1;
+	int shift = 0;//when flags passed as arguments, shifts the search for each ellement
+	bool verbose=false, exclusion=false;
 
-	if (argc >= 3)
-		n_ctx = ((int) argv[2][0] - '0');
+	while (argv[1+shift][0] == '-'){
+		switch (argv[1+shift][1]){
+			case 'h':;
+			case 'H':
+				goto help_exit;
+			case 'v':;
+			case 'V':
+				verbose=true;
+				break;
+			case 'e':;
+			case 'E':
+				exclusion=true;
+		}
+		shift++;
+	};
+
+	if (argc >= 3+shift)
+		n_ctx = ((int) argv[2+shift][0] - '0');
 
 	if ((n_ctx > 10) or (n_ctx < 0))
 		n_ctx = 0;//-1;  if one wants to use -1 context as default
@@ -27,13 +50,21 @@ main(int argc, char *argv[])
 	start_outputing_bits();
 	start_encoding();
 	string ctx_str="";
-	FILE *source = fopen(argv[1],"r");
+	FILE *source = fopen(argv[1+shift],"r");
 
-	/*while (getline(file,line))*/
 	int ch; int symbol;
+	unsigned long count=0;
 	bool first=true;
+
 	ch = getc(source);
+	if (verbose)
+		cerr<<"Max. context length: "<<n_ctx<<endl;
 	while(ch != EOF){
+		if (verbose){
+			count++;
+			if (count % 10000 == 0)
+				cerr<<"Stil encoding. "<<count/1000<<"k chars already processed."<<endl;
+		}
 		symbol = char_to_index[ch];		 /* Translates to an index 		*/
 		//update_model(symbol);		   /* Update the model		*/
 		if ((n_ctx < 0) or (first)){
@@ -41,7 +72,7 @@ main(int argc, char *argv[])
 			first=false;
 		}
 		else
-			ppm_encode(contexts, ctx_str, symbol);
+			ppm_encode(contexts, ctx_str, symbol, exclusion);
 
 		if (n_ctx>=0)
 			update_model(contexts, ctx_str, symbol);
@@ -56,9 +87,11 @@ main(int argc, char *argv[])
 		ch = getc(source);
 	}
 	//encode_symbol(EOF_symbol,cum_freq);		/* Encodes the EOF symbol 		*/
-	ppm_encode(contexts, ctx_str, EOF_symbol);
+	ppm_encode(contexts, ctx_str, EOF_symbol, exclusion);
 	done_encoding();				/* Send the last few bits		*/
 	done_outputing_bits();
+	if (verbose)
+		cerr<<"Finished encoding."<<endl;
 
 	return 0;
 }

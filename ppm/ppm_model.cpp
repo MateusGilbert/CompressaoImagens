@@ -3,6 +3,7 @@
 
 int char_to_index[No_of_chars];
 unsigned char index_to_char[No_of_symbols+1];
+/*bool exclusion_aux[No_of_symbols+1];*/
 
 //start_model -- size vector == n_ctx + 2 (first slot is the -1 table)
 vector< ctx_node* > start_model(int n_ctx){
@@ -30,14 +31,17 @@ vector< ctx_node* > start_model(int n_ctx){
 	return contexts;
 }
 
-int* get_cum_freq(ctx_node* ctx, string ctx_str){
+int* get_cum_freq(ctx_node* ctx, string ctx_str, bool get_freq){
 	size_t ctx_l = ctx_str.length();
 
 	ctx_node *cur = ctx; //skeep -1 table
 	string aux_str = ctx_str;
 
-	if (ctx_l == 0)
+	if (ctx_l == 0){
+		if (get_freq)
+			return ctx->freq;
 		return ctx->cum_freq;
+	}
 
 	string str = aux_str;
 
@@ -49,12 +53,16 @@ int* get_cum_freq(ctx_node* ctx, string ctx_str){
 		aux_str.erase(0,1);
 	}
 
+	if (get_freq)
+		return cur->freq;
+
 	return cur->cum_freq;
 }
 
 inline void up_cum_freq(int *cum_freq, int change, int *freq){//bool up_esc){
 	if (freq[change] == 1){		//a new char observation
 		freq[ESC_symbol]++;
+		freq[0]++;
 		cum_freq[ESC_symbol]++;
 		cum_freq[0]++;
 	}
@@ -94,7 +102,7 @@ void update_model(vector< ctx_node* > ctxs, string ctx_str, int cur_char){
 				found = false;
 				cur->next[index] = new ctx_node;
 				cur = cur->next[index];
-				cur->val = index;
+				/*cur->val = index;*/
 				for (int j=0; j<No_of_chars; j++)
 					cur->next[j] = (ctx_node *) NULL;
 			}
@@ -103,7 +111,6 @@ void update_model(vector< ctx_node* > ctxs, string ctx_str, int cur_char){
 			aux_str.erase(0,1);
 		}
 
-		//o problema deve estar aqui!!!
 		if ((!found) or (ctx_str.length() < 1)){
 			for (int j=1; j<No_of_symbols+1; j++){
 				cur->freq[j]=0;
@@ -117,7 +124,6 @@ void update_model(vector< ctx_node* > ctxs, string ctx_str, int cur_char){
 		if (cur_char != ESC_symbol){//It is actually a char from the alphabet; update counts
 			cur->freq[0]++;		//We trak the frequency explicitly because of the constant the limits the maximum cummulative frequency
 			cur->freq[cur_char]++;
-			/*cur->count++;*/
 			up_cum_freq(cur->cum_freq, cur_char, cur->freq);//up_esc);
 		}
 		else//if cur_char is ESC_symbol, we are creating a new (empty) context, in order to use the ESC_symbol
