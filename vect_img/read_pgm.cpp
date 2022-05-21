@@ -1,19 +1,12 @@
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <regex>
-
-using namespace std;
-typedef unsigned char byte;
+#include "header.hpp"
 
 inline void char_2_int(int &num, char digit){
 	if (num > 0)
 		num *= 10;
 	num += digit - '0';
-	/*cout<<"->"<<num<<endl;*/
 }
 
-int* op_pgm(int &x, int &y, string filename=""){
+int* op_pgm(int &x, int &y, string filename=){
 	x = y = 0;
 	if (filename.length() == 0)
 		return (int *) NULL;
@@ -59,7 +52,7 @@ int* op_pgm(int &x, int &y, string filename=""){
 	int count=0;
 	while(infile.get(val))//tentei colocar mais compacto, deu erro
 		if ( ((int) val) < 0)
-			im_array[count++] = val + 256;
+			im_array[count++] = val + max;
 		else
 			im_array[count++] = val;
 
@@ -68,7 +61,7 @@ int* op_pgm(int &x, int &y, string filename=""){
 	return im_array;
 }
 
-void save_csv(int *img, int x=0, int y=0, string filename="out.csv"){
+void save_csv(int *img, int x, int y, string filename){
 	ofstream outfile(filename);
 
 	for (int i=0; i<y; i++){
