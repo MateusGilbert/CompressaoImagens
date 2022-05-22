@@ -1,7 +1,7 @@
 #include "header.hpp"
 
-vector< int* >vectorize(int *im, int x, int y, int x_fr, int y_fr){
-	vector< int *> vectors;
+vect_list vectorize(int *im, int x, int y, int x_fr, int y_fr){
+	vect_list vectors;
 
 	if ((x <= 0) or (y <= 0) or (x % x_fr != 0 ) or (y % y_fr != 0)){
 		vectors.push_back((int *) NULL);
@@ -54,7 +54,7 @@ vector< int* >vectorize(int *im, int x, int y, int x_fr, int y_fr){
 //
 //	print_im(im, x, y);
 //
-//	vector< int* > im_vects = vectorize(im, x, y, x_fr, y_fr);
+//	vect_list im_vects = vectorize(im, x, y, x_fr, y_fr);
 //
 //	for (int *it : im_vects){
 //		cout<<"vect = [ ";
