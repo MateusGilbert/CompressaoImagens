@@ -56,8 +56,10 @@ inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_siz
 
 		for (int idx : V_i){
 			for (int i=0; i<v_size; i++)
-				cent[i] += v_train[idx][i]/N;
+				cent[i] += v_train[idx][i];
 		}
+		for (int i=0; i<v_size; i++)
+			cent[i] /= N;
 		centroids.push_back(cent);
 	}
 
@@ -65,7 +67,7 @@ inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_siz
 }
 
 
-inline void print_centroids(vect_list centroids, int size){
+void print_centroids(vect_list centroids, int size){
 	for (int *y_i : centroids){
 		cout<<"y_i = [ ";
 		for (int i=0; i<size; i++)
@@ -84,7 +86,8 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	sample(vects.begin(), vects.end(),
 			back_inserter(centroids), n_cent,
 			mt19937{random_device{}()});
-	/*print_centroids(centroids,dim);*/
+//	print_centroids(centroids,dim);
+//	cout<<endl;
 
 	for (int *y_i : centroids){
 		int pert = rand() % 2;
@@ -108,7 +111,8 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 
 	//initialize centroids
 	centroids = init_cent(v_train, N, size);
-	/*print_centroids(centroids,size);*/
+	print_centroids(centroids,size);
+	cout<<endl;
 
 	//initialize quantization region's auxiliary
 	lbg_aux aux;
@@ -131,7 +135,7 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 		for (vector< int > V_i : reg_reg){		//3
 			for (int idx : V_i)
 				D += aux.sq_dist[idx];
-			D /= N;
+			/*D /= N;*/
 		}
 
 	if ((D_old - D)/D < eps)//4 -- dif. do livro
@@ -139,7 +143,8 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 
 	//5
 	centroids = up_centroids(v_train, reg_reg, size);
-	/*print_centroids(centroids,size);*/
+//	print_centroids(centroids,size);
+//	cout<<endl;
 //	char a;
 //	cin>>a;
 	goto main_loop;
@@ -158,20 +163,20 @@ inline vect_list init_vects(int *vals, int n, int size){
 }
 
 
-int main(void){
-	int vals[] = {15,2, 20,13, 2,2, 0,15, 30,4, 14,4, 2,2, 10,10, 11,12, 5,42, 24,44, 42,24, 10,1};
-	vect_list vectors = init_vects(vals, 22, 2);
-	int n_cent = 5, size=2;
-
-	for (int *x_i : vectors){
-		cout<<"x_i = [ ";
-		for (int i=0; i<size; i++)
-			cout<<x_i[i]<<" ";
-		cout<<"]"<<endl;
-	}
-	cout<<endl;
-
-	vect_list centr = lbg(vectors, n_cent, size, 1e-6);
-	print_centroids(centr, size);
-	return 0;
-}
+//int main(void){
+//	int vals[] = {15,2, 20,13, 2,2, 0,15, 30,4, 14,4, 2,2, 10,10, 11,12, 5,42, 24,44, 42,24, 10,1};
+//	vect_list vectors = init_vects(vals, 22, 2);
+//	int n_cent = 5, size=2;
+//
+//	for (int *x_i : vectors){
+//		cout<<"x_i = [ ";
+//		for (int i=0; i<size; i++)
+//			cout<<x_i[i]<<" ";
+//		cout<<"]"<<endl;
+//	}
+//	cout<<endl;
+//
+//	vect_list centr = lbg(vectors, n_cent, size, 1e-6);
+//	print_centroids(centr, size);
+//	return 0;
+//}

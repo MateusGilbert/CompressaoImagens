@@ -19,5 +19,6 @@ void save_csv(int*, int=0, int=0, string="out.csv");
 int* op_pgm(int&, int&, string="");
 vect_list vectorize(int*, int, int, int, int);
 vect_list lbg(vect_list, int, int, float=.1);
+void print_centroids(vect_list, int);
 
 #endif
