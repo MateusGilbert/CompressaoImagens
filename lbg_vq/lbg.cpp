@@ -3,7 +3,6 @@
 typedef vector< vector < int > > reg_register;
 
 typedef struct{
-	/*reg_register q_regions;*/
 	int *cent_ind, size, n_train, n_cent;
 	float *sq_dist;
 } lbg_aux;
@@ -19,20 +18,22 @@ inline float eq_dist2(int *x, int *y, int size){
 inline void def_qregion(int *vect, vect_list centroids, int idx, lbg_aux aux){
 	float sq_dist;
 	int cur_id=0;
+
 	for (int *c : centroids){
 		sq_dist = eq_dist2(vect, c, aux.size);
-		if ((sq_dist < aux.sq_dist[idx]) or (aux.cent_ind[idx] == cur_id++)){
+		if ((sq_dist < aux.sq_dist[idx]) or (aux.cent_ind[idx] == cur_id)){
 			aux.sq_dist[idx] = sq_dist;
-			if (aux.cent_ind[idx] != cur_id-1)
-				aux.cent_ind[idx] = cur_id - 1;
+			if (aux.cent_ind[idx] != cur_id)
+				aux.cent_ind[idx] = cur_id;
 		}
+		cur_id++;
 	}
 
 	return;
 }
 
 inline reg_register split_vects(lbg_aux aux){
-	reg_register reg_reg;//[aux.n_cent];
+	reg_register reg_reg;
 	for (int i=0; i<aux.n_cent; i++)
 		reg_reg.push_back(vector< int >());
 
@@ -45,7 +46,7 @@ inline reg_register split_vects(lbg_aux aux){
 }
 
 inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_size){
-	vect_list centroids;//[reg_reg.size()];
+	vect_list centroids;
 
 	for (vector< int > V_i : reg_reg){
 		int N = V_i.size();
@@ -56,13 +57,23 @@ inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_siz
 		for (int idx : V_i){
 			for (int i=0; i<v_size; i++)
 				cent[i] += v_train[idx][i]/N;
-			centroids.push_back(cent);
 		}
+		centroids.push_back(cent);
 	}
 
 	return centroids;
 }
 
+
+inline void print_centroids(vect_list centroids, int size){
+	for (int *y_i : centroids){
+		cout<<"y_i = [ ";
+		for (int i=0; i<size; i++)
+			cout<<y_i[i]<<" ";
+		cout<<"]"<<endl;
+	}
+	cout<<endl;
+}
 inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	vect_list centroids;
 	vector< int > pos;
@@ -73,6 +84,7 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	sample(vects.begin(), vects.end(),
 			back_inserter(centroids), n_cent,
 			mt19937{random_device{}()});
+	/*print_centroids(centroids,dim);*/
 
 	for (int *y_i : centroids){
 		int pert = rand() % 2;
@@ -87,25 +99,16 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	return centroids;
 }
 
-inline void print_centroids(vect_list centroids, int size){
-	for (int *y_i : centroids){
-		cout<<"y_i = [ ";
-		for (int i=0; i<size; i++)
-			cout<<y_i[i]<<" ";
-		cout<<"]"<<endl;
-	}
-}
-
 /* Using Introduction to Data Compression, by K. Sayood
 as reference. Pseudo-code can be found at pg. 309 (5th
 edition)*/
-vect_list lbg(vect_list v_train, int size, int N, float eps){
+vect_list lbg(vect_list v_train, int N, int size, float eps){
 	vect_list centroids;
-	int D_old, D=0;
+	float D_old, D=3.4e+38;
 
 	//initialize centroids
 	centroids = init_cent(v_train, N, size);
-	print_centroids(centroids,size);
+	/*print_centroids(centroids,size);*/
 
 	//initialize quantization region's auxiliary
 	lbg_aux aux;
@@ -131,22 +134,44 @@ vect_list lbg(vect_list v_train, int size, int N, float eps){
 			D /= N;
 		}
 
-	if ((D - D_old)/D < eps)//4
+	if ((D_old - D)/D < eps)//4 -- dif. do livro
 		return centroids;
 
 	//5
-	/*delete centroids;*/
 	centroids = up_centroids(v_train, reg_reg, size);
+	/*print_centroids(centroids,size);*/
+//	char a;
+//	cin>>a;
 	goto main_loop;
+}
+
+inline vect_list init_vects(int *vals, int n, int size){
+	vect_list vects;
+
+	for (int i=0; i<n; i+=size){
+		vects.push_back(new int[size]);
+		for (int j=i; j-i<size; j++)
+			vects[i / size][j-i] = vals[j];
+	}
+
+	return vects;
 }
 
 
 int main(void){
-	vect_list vectors = {//ajeitar isso!!!
-		{1,2}, {1,1}, {0,1}, {2,2}, {2,1}, {3,4}, {4,2}, {5,2}, {2,4}
-	};
-	int n_cent = 3, size=2;
-	vect_list centr = lbg(vectors, n_cent, size);
+	int vals[] = {15,2, 20,13, 2,2, 0,15, 30,4, 14,4, 2,2, 10,10, 11,12, 5,42, 24,44, 42,24, 10,1};
+	vect_list vectors = init_vects(vals, 22, 2);
+	int n_cent = 5, size=2;
+
+	for (int *x_i : vectors){
+		cout<<"x_i = [ ";
+		for (int i=0; i<size; i++)
+			cout<<x_i[i]<<" ";
+		cout<<"]"<<endl;
+	}
+	cout<<endl;
+
+	vect_list centr = lbg(vectors, n_cent, size, 1e-6);
 	print_centroids(centr, size);
 	return 0;
 }
