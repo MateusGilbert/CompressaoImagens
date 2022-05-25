@@ -1,20 +1,21 @@
 #include "header.hpp"
-#include <experimental/filesystem>
-#include <cstdio>
 
 inline void save_codebook(vect_list centroids, int x, int y, string saveat="codebook"){
 	int N = centroids.size();
 	saveat += "_" + to_string(x) + "_" + to_string(y) + "_" + to_string(N) + ".csv";
-	freopen(saveat.c_str(),"w",stdout);
-	cout<<"# x "<<x<<" y "<<y<<" N "<<N<<endl;
+	ofstream outfile(saveat);
+
+	outfile<<"# x "<<x<<" y "<<y<<" N "<<N<<endl;
 	for (int *y_i : centroids){
 		for (int i=0; i<x*y; i++)
 			if (i == 0)
-				cout<<y_i[0];
+				outfile<<y_i[0];
 			else
-				cout<<","<<y_i[i];
-		cout<<endl;
+				outfile<<","<<y_i[i];
+		outfile<<endl;
 	}
+
+	outfile.close();
 
 	return;
 }

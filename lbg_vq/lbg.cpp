@@ -10,7 +10,7 @@ typedef struct{
 inline float eq_dist2(int *x, int *y, int size){
 	float cum=0;
 	for (int i=0; i<size; i++)
-		cum += pow(x[i] - y[i], 2);
+		cum += (float) pow(x[i] - y[i], 2);
 
 	return cum;
 }
@@ -66,7 +66,6 @@ inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_siz
 	return centroids;
 }
 
-
 void print_centroids(vect_list centroids, int size){
 	for (int *y_i : centroids){
 		cout<<"y_i = [ ";
@@ -76,6 +75,7 @@ void print_centroids(vect_list centroids, int size){
 	}
 	cout<<endl;
 }
+
 inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	vect_list centroids;
 	vector< int > pos;
@@ -111,8 +111,8 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 
 	//initialize centroids
 	centroids = init_cent(v_train, N, size);
-	print_centroids(centroids,size);
-	cout<<endl;
+	/*print_centroids(centroids,size);*/
+	/*cout<<endl;*/
 
 	//initialize quantization region's auxiliary
 	lbg_aux aux;

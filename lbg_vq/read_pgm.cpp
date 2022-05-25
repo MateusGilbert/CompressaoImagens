@@ -6,7 +6,7 @@ inline void char_2_int(int &num, char digit){
 	num += digit - '0';
 }
 
-int* op_pgm(int &x, int &y, string filename=){
+int* op_pgm(int &x, int &y, string filename){
 	x = y = 0;
 	if (filename.length() == 0)
 		return (int *) NULL;
@@ -72,6 +72,8 @@ void save_csv(int *img, int x, int y, string filename){
 		}
 		outfile<<endl;
 	}
+
+	outfile.close();
 
 	return;
 }
