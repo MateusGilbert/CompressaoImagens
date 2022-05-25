@@ -1,5 +1,23 @@
 #include "header.hpp"
 #include <experimental/filesystem>
+#include <cstdio>
+
+inline void save_codebook(vect_list centroids, int x, int y, string saveat="codebook"){
+	int N = centroids.size();
+	saveat += "_" + to_string(x) + "_" + to_string(y) + "_" + to_string(N) + ".csv";
+	freopen(saveat.c_str(),"w",stdout);
+	cout<<"# x "<<x<<" y "<<y<<" N "<<N<<endl;
+	for (int *y_i : centroids){
+		for (int i=0; i<x*y; i++)
+			if (i == 0)
+				cout<<y_i[0];
+			else
+				cout<<","<<y_i[i];
+		cout<<endl;
+	}
+
+	return;
+}
 
 int main(int argc, char *argv[]){
 	if (argc < 6){
@@ -43,7 +61,8 @@ int main(int argc, char *argv[]){
 	}
 	vect_list codebook = lbg(tr_vects, n_cent, x_fr*y_fr, 1e-6);
 
-	print_centroids(codebook,x_fr*y_fr);
+	save_codebook(codebook, x_fr, y_fr);
+	/*print_centroids(codebook,x_fr*y_fr);*/
 
 	return 0;
 }
