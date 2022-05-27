@@ -50,7 +50,7 @@ int* op_pgm(int &x, int &y, string filename){
 	int *im_array = new int[x*y];
 	char val;
 	int count=0;
-	while(infile.get(val))//tentei colocar mais compacto, deu erro
+	while(infile.get(val))
 		if ( ((int) val) < 0)
 			im_array[count++] = val + max;
 		else

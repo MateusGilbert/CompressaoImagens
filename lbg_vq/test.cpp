@@ -2,9 +2,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-/*#include <experimental/filesystem>*/
-
-/*namespace fs = experimental::filesystem;*/
 
 inline vect_list read_codebook(string code_file, int &x, int &y){
 	ifstream file(code_file);
@@ -75,21 +72,19 @@ inline int match_vect(int *vect, vect_list centroids, int size){
 int* v_encode(int *in_im, vect_list centroids, int x, int y, int x_fr, int y_fr){
 	int *out_im = new int[x*y];
 
-	for (int i=0; i<=y-y_fr; i += y_fr)//{
+	for (int i=0; i<=y-y_fr; i += y_fr)
 		for (int j=0; j<=x-x_fr; j += x_fr){
 			int *v = new int[x_fr*y_fr];
 			int count=0;
 			for (int ii=0; ii<y_fr; ii++)
 				for (int jj=0; jj<x_fr; jj++)
 					v[count++] = in_im[(i+ii)*x + j + jj];
-			//vectors.push_back(v);
 			int id = match_vect(v,centroids,x_fr*y_fr);
-			/*cout<<"oi"<<id<<endl;*/
 			int *c = centroids[id];
 			count=0;
 			for (int ii=0; ii<y_fr; ii++)
 				for (int jj=0; jj<x_fr; jj++)
-					out_im[(i+ii)*x + j + jj] = c[count++];// in_im[(i+ii)*x + j + jj];
+					out_im[(i+ii)*x + j + jj] = c[count++];
 		}
 
 	return out_im;
@@ -113,7 +108,6 @@ int main(int argc, char *argv[]){
 
 	bool save_og = false;
 	string dest_dir= to_string(centroids.size()) + "_" + to_string(x_fr) + "_" + to_string(y_fr);
-	/*fs::create_directory(dest_dir);*/
 	struct stat st = {0};
 	if (stat(dest_dir.c_str(), &st) == -1)
 		mkdir(dest_dir.c_str(), 0700);

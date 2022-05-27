@@ -76,6 +76,33 @@ void print_centroids(vect_list centroids, int size){
 	cout<<endl;
 }
 
+inline bool chk_eq(int *x, int *y, int size){
+	for (int i=0; i<size; i++)
+		if (x[i] != y[i])
+			return false;
+	return true;
+}
+
+inline void make_uniq(vect_list vects, int dim){
+	int i=1, n=vects.size();
+
+	for (int *y_i : vects)//{
+		for (int j=i++; j<n; j++)//{
+			if (chk_eq(y_i,vects[j],dim)){
+				int pert = rand() % 2;
+				int pos = rand() % dim;						//selects a position
+				if ((pert == 0) or (y_i[pos] == 255))
+					pert = -1;
+				else if (y_i[pos] == 0)
+					pert = 1;
+				y_i[pos] += pert;
+				j=i-1;
+			}
+		//}
+	//}
+	return;
+}
+
 inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	vect_list centroids;
 	vector< int > pos;
@@ -98,6 +125,12 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 			pert = 1;
 		y_i[pos] += pert;
 	}
+//	print_centroids(centroids,dim);
+//	cout<<endl;
+
+	make_uniq(centroids,dim);
+//	print_centroids(centroids,dim);
+//	cout<<endl;
 
 	return centroids;
 }
@@ -145,8 +178,6 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 	centroids = up_centroids(v_train, reg_reg, size);
 //	print_centroids(centroids,size);
 //	cout<<endl;
-//	char a;
-//	cin>>a;
 	goto main_loop;
 }
 
