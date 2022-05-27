@@ -1,2 +1,2 @@
 * linguist-vendored
-*.ipynb linguist-vendored=false
+lgb_vq/*.ipynb linguist-vendored=false
