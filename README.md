@@ -22,10 +22,10 @@ obs2.: quando -e é selecionado, o princípio da exclusão é utilizado na compr
 ## LGB -- Vector Quantizer
 Programas para gerar um codebook para quantizaço vetorial, utilizando LBG, e codificar a imagem a partir de um codebook arbitrário. Para efetuar o treinamento
 
-### ./train -n <N-centroids> -d <px-horizontal> <px-vertical> -f <pgm-files>
+### ./train -n \<N-centroids\> -d \<px-horizontal\> \<px-vertical\> -f \<pgm-files\>
   
 onde a flag -n indica o número de vetores que forma o codebook, -d indica o arranjo de pixels e -f os arquivos (no formato PGM) que serão utilizados no treinamento. Tendo um codebook implementado, a quantização pode ser efetuada executando
   
-### ./test <codebook> <pgm-files>
+### ./test \<codebook\> \<pgm-files\>
   
 obs.: Modo preguiçoso de execução: são fornecidos dois scripts em bash para o treinamento e teste de variadas configurações. Os scripts são autoesplicativos.
