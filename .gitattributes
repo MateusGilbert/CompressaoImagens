@@ -1,7 +1,5 @@
 * linguist-vendored
-./huffman/* linguist-vendored=false
-./ppm/* linguist-vendored=false
-./lgb_vq/*.cpp linguist-vendored=false
-./lgb_vq/*.hpp linguist-vendored=false
-./lgb_vq/*.sh linguist-vendored=false
+*.cpp linguist-vendored=false
+*.hpp linguist-vendored=false
+*.sh linguist-vendored=false
 
