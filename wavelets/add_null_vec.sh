@@ -10,7 +10,10 @@ for file in $files; do
 			x=$y; y=$aux;
 		fi
 	done
-	echo $file $x $y
-done
 
-#acrescentar o vetor nulo
+	string='0'
+	for _ in $(seq $((x*y - 1))); do
+		string+=`echo ',0'`
+	done
+	echo $string >> $file
+done
