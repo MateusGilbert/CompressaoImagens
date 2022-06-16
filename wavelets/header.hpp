@@ -26,7 +26,7 @@ int* ddot_to_bands(int**, int, int);
 double avg_rem(int**,int,int);
 void avg_add(int**,int,int,double);
 
-//acrescentar save_codebook
+int** init_dd_img(int, int);
 
 //hand_bands
 typedef struct band_node{
@@ -43,9 +43,9 @@ vect_list read_codebook(string, int&, int&);
 double eq_dist2(int*,int*,int);
 int* v_encode(int*,vect_list,int,int,int,int);
 
+//from lbg_vq
 vect_list vectorize(int*, int, int, int, int);
-vect_list lbg(vect_list, int, int, float=.1);
+vect_list lbg(vect_list, int, int, float=.1,bool=true);
 void print_centroids(vect_list, int);
-int** init_dd_img(int, int);
 
 #endif

@@ -34,6 +34,24 @@ inline void save_codebook(vect_list centroids, int x, int y, string saveat="code
 	return;
 }
 
+inline void add_null_vec(vect_list vectors, int size){
+	bool found=true;
+
+	for (auto v : vectors){
+		found=true;
+		for (int i=0; i<size; i++)
+			if (v[i] != 0){
+				found=false;
+				break;
+			}
+	}
+
+	if (!found){
+		int vect[size] = {};
+		vectors.push_back(vect);
+	}
+}
+
 int
 main(int argc, char *argv[]){
 	if (argc < 6){
@@ -91,18 +109,17 @@ main(int argc, char *argv[]){
 		analysis(dd_img,dd_dec, sIMG, x, y);
 
 		subbands bands = split_bands(sIMG,x,y,NSTAGES);
-		/*int n_bands = bands.size();*/
 		for (int i=0; i<NBANDS; i++){
 			int x = bands[i].x, y = bands[i].y;
 			vect_list aux = vectorize(bands[i].img,x,y,x_fr,y_fr);
 			tr_vects[i].insert(tr_vects[i].end(), aux.begin(), aux.end());
-			cout<<tr_vects[i].size()<<endl;
 		}
 	}
 
 	//acrescentar o lbg por banda
 	for (int i=0; i<NBANDS; i++){
-		vect_list codebook = lbg(tr_vects[i], n_cent, x_fr*y_fr, 1e-6);
+		vect_list codebook = lbg(tr_vects[i], n_cent, x_fr*y_fr, 1e-6, false);
+		add_null_vec(codebook, x_fr*y_fr);
 		save_codebook(codebook,x_fr,y_fr,dir_names[i] + "/codebook");
 	}
 

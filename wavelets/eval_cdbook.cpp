@@ -66,7 +66,7 @@ main(int argc, char *argv[]){
 				subband band = split_bands(sIMG,x,y,NSTAGES)[n_band];
 				//quantizar a banda
 				subband q_band = quantize_band(band, centroids, x_fr, y_fr);
-				D += eq_dist2(band.img,q_band.img, x_fr*y_fr)/(x_fr*y_fr);//mse
+				D += eq_dist2(band.img,q_band.img, x*y)/(x*y);//mse
 			}
 			R *= aux;
 			D /= (double) test_files.size();
