@@ -45,6 +45,27 @@ inline reg_register split_vects(lbg_aux aux){
 	return reg_reg;
 }
 
+inline void no_empty_cluster(reg_register reg_reg){
+	vector< int > aux;
+	int N_clusters = reg_reg.size();
+	int top_cluster=0, top_size=0;
+
+	for (int i=0; i<N_clusters; i++)
+		if (reg_reg[i].empty())
+			aux.push_back(i);
+		else if (reg_reg[i].size() > (unsigned) top_size){
+				top_cluster = i;
+				top_size = reg_reg[i].size();
+		}
+
+	for (auto i: aux){
+		int idx = rand() % top_size--;
+		reg_reg[i].push_back(reg_reg[top_cluster][idx]);
+		reg_reg[top_cluster][idx] = reg_reg[top_cluster].back();
+		reg_reg[top_cluster].pop_back();
+	}
+}
+
 inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_size){
 	vect_list centroids;
 
@@ -83,27 +104,26 @@ inline bool chk_eq(int *x, int *y, int size){
 	return true;
 }
 
-inline void make_uniq(vect_list vects, int dim){
+inline void make_uniq(vect_list vects, int dim, bool restrict=true){
 	int i=1, n=vects.size();
 
-	for (int *y_i : vects)//{
-		for (int j=i++; j<n; j++)//{
+	for (int *y_i : vects)
+		for (int j=i++; j<n; j++)
 			if (chk_eq(y_i,vects[j],dim)){
 				int pert = rand() % 2;
 				int pos = rand() % dim;						//selects a position
-				if ((pert == 0) or (y_i[pos] == 255))
+				if ((pert == 0) or (restrict and (y_i[pos] == 255)))
 					pert = -1;
-				else if (y_i[pos] == 0)
+				else if (restrict and (y_i[pos] == 0))
 					pert = 1;
 				y_i[pos] += pert;
 				j=i-1;
 			}
-		//}
-	//}
+
 	return;
 }
 
-inline vect_list init_cent(vect_list vects, int n_cent, int dim){
+inline vect_list init_cent(vect_list vects, int n_cent, int dim, bool restrict=true){
 	vect_list centroids;
 	vector< int > pos;
 
@@ -113,24 +133,18 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 	sample(vects.begin(), vects.end(),
 			back_inserter(centroids), n_cent,
 			mt19937{random_device{}()});
-//	print_centroids(centroids,dim);
-//	cout<<endl;
 
 	for (int *y_i : centroids){
 		int pert = rand() % 2;
-		int pos = rand() % dim;						//selects a position
-		if ((pert == 0) or (y_i[pos] == 255))
+		int pos = rand() % dim;
+		if ((pert == 0) or ((y_i[pos] == 255) and restrict))
 			pert = -1;
-		else if (y_i[pos] == 0)
+		else if ((y_i[pos] == 0) and restrict)
 			pert = 1;
 		y_i[pos] += pert;
 	}
-//	print_centroids(centroids,dim);
-//	cout<<endl;
 
 	make_uniq(centroids,dim);
-//	print_centroids(centroids,dim);
-//	cout<<endl;
 
 	return centroids;
 }
@@ -138,14 +152,12 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 /* Using Introduction to Data Compression, by K. Sayood
 as reference. Pseudo-code can be found at pg. 309 (5th
 edition)*/
-vect_list lbg(vect_list v_train, int N, int size, float eps){
+vect_list lbg(vect_list v_train, int N, int size, float eps, bool restrict){
 	vect_list centroids;
 	float D_old, D=3.4e+38;
 
 	//initialize centroids
 	centroids = init_cent(v_train, N, size);
-	/*print_centroids(centroids,size);*/
-	/*cout<<endl;*/
 
 	//initialize quantization region's auxiliary
 	lbg_aux aux;
@@ -153,7 +165,6 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 	aux.n_train = n_train;
 	aux.n_cent = N;
 	aux.cent_ind = new int[n_train];
-	/*aux.q_regions = new reg_register[N];*/
 	aux.sq_dist = new float[n_train];
 	for (int i=0; i<n_train; i++)
 		aux.sq_dist[i] = 3.4e+38;    //emulate inf dist
@@ -165,6 +176,7 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 		for (int i=0; i<n_train; i++)				//2
 			def_qregion(v_train[i], centroids, i, aux);
 		reg_register reg_reg = split_vects(aux);
+		no_empty_cluster(reg_reg);				//acrescentei
 		for (vector< int > V_i : reg_reg){		//3
 			for (int idx : V_i)
 				D += aux.sq_dist[idx];
