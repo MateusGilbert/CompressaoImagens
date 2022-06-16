@@ -17,14 +17,15 @@ using namespace std;
 typedef vector< int* > vect_list;
 typedef vector< vect_list > band_vects;
 
-//hand_pgm
+//hand_img
 void save_csv(int*, int=0, int=0, string="out.csv");
 int* op_pgm(int&, int&, string="");
 int** im_to_ddot(int*, int, int);
 int* ddot_to_im(int**, int, int);
 int* ddot_to_bands(int**, int, int);
-int avg_rem(int**,int,int);
-void avg_add(int**,int,int,int);
+double avg_rem(int**,int,int);
+void avg_add(int**,int,int,double);
+
 //acrescentar save_codebook
 
 //hand_bands
@@ -35,6 +36,12 @@ typedef struct band_node{
 } subband;
 typedef vector< subband > subbands;
 subbands split_bands(double*[],int,int,int);
+subband quantize_band(subband,vect_list,int,int);
+
+//quantize
+vect_list read_codebook(string, int&, int&);
+double eq_dist2(int*,int*,int);
+int* v_encode(int*,vect_list,int,int,int,int);
 
 vect_list vectorize(int*, int, int, int, int);
 vect_list lbg(vect_list, int, int, float=.1);
