@@ -10,21 +10,36 @@ int** init_dd_img(int x, int y){
 	return dd_img;
 }
 
+inline vector< string > split_str(string str, char split_at=' '){
+	vector< string > strs;
+	vector< size_t > pos;
+	size_t p=0, last = str.find_last_of(split_at), p_ins=0;
+	size_t len=str.length();
+	while (++p < len)
+		if (str[p] == split_at){
+			strs.push_back(str.substr(p_ins,p-p_ins));
+			p_ins=p+1;
+		}
+	strs.push_back(str.substr(last+1));
+
+	return strs;
+}
+
+
 vector< string > get_codebooks(int lambda, vector< string > directories, string outfile){
 	vector< string > codebooks;
 
 	for (auto dir: directories){
-		ifstream file(outfile);
+		ifstream file(dir + "/" + outfile);
 		string line, codebook;
 		float D,R,best=1e6;
 		getline(file,line);			//ignore header
 		while(getline(file,line)){
-			vector< string > entries;
-			boost::split(entries, line, boost::is_any_of(","), boost::token_compress_on);//criar essas funcoes
+			vector< string > entries = split_str(line,',');
 			string aux = entries[0];
 			D = atof(entries[1].c_str());
 			R = atof(entries[2].c_str());
-			if ((D + (float) lambda*R) < best){
+			if ((D + (float) lambda*R) < best){//implementar convex hull -- esse search está errado
 				best = D + (float) lambda*R;
 				codebook = aux;
 			}
@@ -46,9 +61,9 @@ main(int argc, char *argv[]){
 	int shift=2; //ajeitar e acrescentar switch
 	vector< string > directories;
 	while(shift < argc)
-		files.push_back(argv[shift++]);
+		directories.push_back(argv[shift++]);
 
-	vector< string > codebooks = get_codebooks(directories)
+	vector< string > codebooks = get_codebooks(lambda,directories);
 	for (auto codebook: codebooks)
 		cout<<codebook<<endl;
 
