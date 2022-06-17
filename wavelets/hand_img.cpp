@@ -126,7 +126,7 @@ double avg_rem(int **img, int x, int y){
 void avg_add(int **img, int x, int y, double avg){
 	for (int i=0; i<x; i++)
 		for (int j=0; j<y; j++)
-			img[j][i] += (int) subd_round(avg);
+			img[j][i] = (int) subd_round(img[j][i] + avg);//mudei
 
 	return;
 }

@@ -43,6 +43,9 @@ vect_list read_codebook(string, int&, int&);
 double eq_dist2(int*,int*,int);
 int* v_encode(int*,vect_list,int,int,int,int);
 
+//encode
+vector< string > get_codebooks(int, vector< string >, string="results.csv");
+
 //from lbg_vq
 vect_list vectorize(int*, int, int, int, int);
 vect_list lbg(vect_list, int, int, float=.1,bool=true);
