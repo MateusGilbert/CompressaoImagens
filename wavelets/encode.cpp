@@ -10,40 +10,66 @@ int** init_dd_img(int x, int y){
 	return dd_img;
 }
 
-inline vector< string > split_str(string str, char split_at=' '){
-	vector< string > strs;
-	vector< size_t > pos;
-	size_t p=0, last = str.find_last_of(split_at), p_ins=0;
-	size_t len=str.length();
-	while (++p < len)
-		if (str[p] == split_at){
-			strs.push_back(str.substr(p_ins,p-p_ins));
-			p_ins=p+1;
-		}
-	strs.push_back(str.substr(last+1));
+//inline vector< string > split_str(string str, char split_at=' '){
+//	vector< string > strs;
+//	vector< size_t > pos;
+//	size_t p=0, last = str.find_last_of(split_at), p_ins=0;
+//	size_t len=str.length();
+//	while (++p < len)
+//		if (str[p] == split_at){
+//			strs.push_back(str.substr(p_ins,p-p_ins));
+//			p_ins=p+1;
+//		}
+//	strs.push_back(str.substr(last+1));
+//
+//	return strs;
+//}
 
-	return strs;
+inline void ignore_header(FILE *i_file){
+	char aux;
+	do{
+		fread(&aux, sizeof(char), 1, i_file);
+	while(aux != '\n');
 }
-
 
 vector< string > get_codebooks(int lambda, vector< string > directories, string outfile){
 	vector< string > codebooks;
 
 	for (auto dir: directories){
-		ifstream file(dir + "/" + outfile);
-		string line, codebook;
-		float D,R,best=1e6;
-		getline(file,line);			//ignore header
-		while(getline(file,line)){
-			vector< string > entries = split_str(line,',');
-			string aux = entries[0];
-			D = atof(entries[1].c_str());
-			R = atof(entries[2].c_str());
-			if ((D + (float) lambda*R) < best){//implementar convex hull -- esse search está errado
-				best = D + (float) lambda*R;
-				codebook = aux;
+		string filename = dir + "/" + outfile;
+		string codebook, cand_cdbk;
+		double D,R,best=1.7e308;
+		bool close_file=false;
+		FILE *res = fopen(filename.c_str(), "rb");
+
+		/*getline(file,line);			//ignore header*/
+		ignore_header(res);
+		while (!close_file){
+			cand_cdbk="";
+			fread(&D, sizeof(double), 1, res);
+			fread(&R, sizeof(double), 1, res);
+			char aux;
+			do{
+				size_t s = fread(&aux, sizeof(char), 1, res);
+				if ((aux != '\n') or (s != 1))
+					break;
+				cand_cdbk.push_back(aux);
+				if (s != 1)
+					close_file = true;
+			}while(true);
+//		while(getline(file,line)){
+//			vector< string > entries = split_str(line,',');
+//			string aux = entries[0];
+//			D = atof(entries[1].c_str());
+//			R = atof(entries[2].c_str());
+			if ((R - D/lambda) < best){//esse search está errado?
+				best = R - D/lambda; //conferir este D
+				codebook = cand_cdbk;
 			}
 		}
+		fclose(res);
+//			cout<<best<<endl;
+//		}
 		codebooks.push_back(codebook);
 	}
 
