@@ -27,7 +27,7 @@ main(int argc, char *argv[]){
 
 	for (auto inp: cli_input){
 		string term = inp.substr(inp.find_last_of(".") + 1);
-		if (term == "csv")
+		if (term == "dat")
 			codebooks.push_back(inp);
 		else if (term == "pgm")
 			test_files.push_back(inp);
@@ -50,12 +50,12 @@ main(int argc, char *argv[]){
 		else{
 			vect_list centroids = read_codebook(code_file, x_fr, y_fr);
 
-			double D=0., aux=0.;
-			double R= log2((double ) centroids.size()) / (double) test_files.size(); //log_2(#codebook)/N_files
+			double D=0.;
+			double R = log2((double) centroids.size()) / (double) (x_fr*y_fr); //log_2(#codebook)/(tam. bloco)
 			for (string file : test_files){
 				int x=0,y=0;
 				int *im_array = op_pgm(x,y,file);
-				aux += 1./((double) x*y);
+				/*aux_R += 1./((double) x_fr*y_fr);*/
 				int **dd_img = im_to_ddot(im_array, x, y);
 				int **dd_dec = init_dd_img(x,y);
 
@@ -63,28 +63,42 @@ main(int argc, char *argv[]){
 				double *sIMG[YIMG];
 				analysis(dd_img,dd_dec, sIMG, x, y);
 
-				subband band = split_bands(sIMG,x,y,NSTAGES)[n_band];
+				subbands aux = split_bands(sIMG,x,y,NSTAGES);
+				subband band = aux[n_band];
 				//quantizar a banda
 				subband q_band = quantize_band(band, centroids, x_fr, y_fr);
 				x = band.x; y = band.y;
+				/*cout<<"x = "<<x<<"; y = "<<y<<endl;*/
+//				for (int i=0; i<x*y; i++)
+//					cout<<band.img[i]<< " - "<<q_band.img[i]<<endl;
 				D += eq_dist2(band.img,q_band.img, x*y)/(x*y);//mse
+				/*cout<<"R = "<<R<<"; D = "<<D<<endl;*/
 			}
-			R *= aux;
-			D /= (double) test_files.size();
+			/*R *= aux_R;*/
+			D /= test_files.size();
 
-			ifstream infile(dirname + "/results.csv");
-			if (infile){
-				infile.close();
-				ofstream outfile(dirname + "/results.csv", ios_base::app);
-				outfile<<code_file + "," + to_string(D) + "," + to_string(R)<<endl;
+			string filename = dirname + "/results.dat";
+			ifstream infile(filename);
+			if (!infile){
+				/*infile.close();*/
+				ofstream outfile(filename);
+				outfile<<"# D R Codebook"<<endl;
+//				outfile<<code_file + "," + to_string(D) + "," + to_string(R)<<endl;
 				outfile.close();
 			}
-			else{
-				ofstream outfile(dirname + "/results.csv");
-				outfile<<"Codebook,D,R"<<endl;
-				outfile<<code_file + "," + to_string(D) + "," + to_string(R)<<endl;
-				outfile.close();
-			}
+//			else{
+//				ofstream outfile(dirname + "/results.csv");
+//				outfile<<"Codebook,D,R"<<endl;
+//				outfile<<code_file + "," + to_string(D) + "," + to_string(R)<<endl;
+//				outfile.close();
+//			}
+			FILE *outfile = fopen(filename.c_str(),"ab");
+			fwrite(&D, sizeof(double), 1, outfile);
+			fwrite(&R, sizeof(double), 1, outfile);
+			fwrite(code_file.c_str(), sizeof(char), code_file.length(), outfile);
+			char e_line = '\n';
+			fwrite(&e_line,sizeof(char), 1, outfile);
+			fclose(outfile);
 		}
 	}
 
