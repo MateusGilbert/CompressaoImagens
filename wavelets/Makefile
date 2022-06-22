@@ -17,7 +17,7 @@ E_OBJS = encode.o $(COM_OBJS) #bit_output.o arithmetic_encode.o adaptive_model.o
 #D_OBJS = decode.o #bit_input.o arithmetic_decode.o adaptive_model.o
 H_OBJS = helper.o $(COM_OBJS)
 
-EXECS = encode eval_cdbook train test_subc
+EXECS = encode eval_cdbook train
 
 all: $(EXECS)
 
@@ -34,6 +34,13 @@ train: $(Tr_OBJS)
 	$(LD) $(LFLAGS) $@ $^
 
 test_subc: $(H_OBJS)
+	$(LD) $(LFLAGS) $@ $^
+
+#programas para testar as funcoes
+test_q: aux_quant.o vectorize.o lbg.o $(Q_OBJS) $(COM_OBJS)
+	$(LD) $(LFLAGS) $@ $^
+
+test_pad: aux_pad.o hand_img.o
 	$(LD) $(LFLAGS) $@ $^
 
 #programs inside other directories

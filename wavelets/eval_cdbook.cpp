@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <bits/stdc++.h>
 
-int** init_dd_img(int x, int y){
-	int **dd_img = (int **) malloc(y*sizeof(int*));
-	for (int i=0; i<y; i++)
-		dd_img[i] = (int *) malloc(x*sizeof(int));
-
-	return dd_img;
-}
+//int** init_dd_img(int x, int y){
+//	int **dd_img = (int **) malloc(y*sizeof(int*));
+//	for (int i=0; i<y; i++)
+//		dd_img[i] = (int *) malloc(x*sizeof(int));
+//
+//	return dd_img;
+//}
 
 int
 main(int argc, char *argv[]){
@@ -62,6 +62,7 @@ main(int argc, char *argv[]){
 				double *sIMG[YIMG];
 				analysis(dd_img,dd_dec, sIMG, x, y);
 
+				//tentar compactar
 				subbands aux = split_bands(sIMG,x,y,NSTAGES);
 				subband band = aux[n_band];
 				//quantizar a banda

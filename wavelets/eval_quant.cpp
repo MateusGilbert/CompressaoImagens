@@ -1,30 +1,6 @@
 #include "missing_header.h"
 #include "header.hpp"
 #include <stdlib.h>
-
-//int** init_dd_img(int x, int y){
-//	int **dd_img = (int **) malloc(y*sizeof(int*));
-//	for (int i=0; i<y; i++)
-//		dd_img[i] = (int *) malloc(x*sizeof(int));
-//
-//	return dd_img;
-//}
-
-//inline vector< string > split_str(string str, char split_at=' '){
-//	vector< string > strs;
-//	vector< size_t > pos;
-//	size_t p=0, last = str.find_last_of(split_at), p_ins=0;
-//	size_t len=str.length();
-//	while (++p < len)
-//		if (str[p] == split_at){
-//			strs.push_back(str.substr(p_ins,p-p_ins));
-//			p_ins=p+1;
-//		}
-//	strs.push_back(str.substr(last+1));
-//
-//	return strs;
-//}
-
 inline void ignore_header(FILE *i_file){
 	char aux;
 	do{
@@ -87,23 +63,43 @@ main(int argc, char *argv[]){
 	for (auto codebook: codebooks)
 		cout<<codebook<<endl;
 
-//	vect_list tr_vects;
-//	for (string file : files){
-//		int x=0,y=0;
-//		int *im_array = op_pgm(x,y,file);
-//		int **dd_img = im_to_ddot(im_array, x, y);
-//		int **dd_out = init_dd_img(x,y);
-//		int **dd_dec = init_dd_img(x,y);
-//
-//		double *sIMG[YIMG];
-//		analysis(dd_img,dd_dec, sIMG, x, y);
-//		int *d_img = ddot_to_im(dd_dec, x, y);
-//		save_csv(d_img, x, y, file + "d.csv");
-//
-//		synthesis(sIMG, dd_out, x, y);
-//		int *r_img = ddot_to_im(dd_out, x, y);
-//		save_csv(r_img, x, y, file + ".csv");
-//	}
+	vect_list tr_vects;
+	for (string file : files){
+		int x=0,y=0;
+		int *im_array = op_pgm(x,y,file);
+		int **dd_img = im_to_ddot(im_array, x, y);
+		int **dd_out = init_dd_img(x,y);
+		int **dd_dec = init_dd_img(x,y);
+
+		//acrescentar remover padding
+		//check if padding is needed; adds it if it is the case
+//		int p = (int) pow(2,NSTAGES);
+//		int pad_x = (x / p) % x_fr;
+//		if (pad_x != 0)
+//			pad_x = (x_fr - pad_x)*p;
+//		int pad_y = (y / p) % y_fr;
+//		if (pad_y != 0)
+//			pad_y = (y_fr - pad_y)*p;
+//		if ((pad_x != 0) or (pad_y != 0)){
+//			im_array = add_padding(im_array, x, y, pad_x, pad_y);
+//			x += pad_x;
+//			y += pad_y;
+//		}
+
+		double *sIMG[YIMG];
+		analysis(dd_img,dd_dec, sIMG, x, y);
+		int *d_img = ddot_to_im(dd_dec, x, y);
+		save_csv(d_img, x, y, file + "d.csv");
+
+		subbands bands = split_bands(sIMG,x,y,NSTAGES);
+		subbands q_bands;
+		for (auto band : bands)//quantizar bandas separadamente
+		//agregar bandas
+
+		synthesis(sIMG, dd_out, x, y);
+		int *r_img = ddot_to_im(dd_out, x, y);
+		save_csv(r_img, x, y, file + ".csv");
+	}
 
 	return 0;
 }

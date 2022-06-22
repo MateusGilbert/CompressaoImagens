@@ -62,6 +62,25 @@ int* op_pgm(int &x, int &y, string filename){
 	return im_array;
 }
 
+int* add_padding(int *og_img, int x, int y, int pad_x, int pad_y){
+	int* pad_img = new int[(x + pad_x)*(y + pad_y)];
+	int** mat_pad = im_to_ddot(pad_img, x+pad_x, y+pad_y);
+	int** mat_img = im_to_ddot(og_img, x, y);
+
+	for (int i=0; i<y; i++){
+		for (int j=0; j<x; j++)
+			mat_pad[i][j] = mat_img[i][j];
+		for (int j=0; j<pad_x; j++)
+			mat_pad[i][x + j] = mat_img[i][x-1];
+	}
+
+	for (int i=0; i<pad_y; i++)
+		for(int j=0; j<x+pad_x; j++)
+			mat_pad[i+y][j] = mat_pad[y-1][j];
+
+	return ddot_to_im(mat_pad,x+pad_x,y+pad_y);
+}
+
 void save_csv(int *img, int x, int y, string filename){
 	ofstream outfile(filename);
 
@@ -129,4 +148,12 @@ void avg_add(int **img, int x, int y, double avg){
 			img[j][i] = (int) subd_round(img[j][i] + avg);//mudei
 
 	return;
+}
+
+int** init_dd_img(int x, int y){
+	int **dd_img = (int **) malloc(y*sizeof(int*));
+	for (int i=0; i<y; i++)
+		dd_img[i] = (int *) malloc(x*sizeof(int));
+
+	return dd_img;
 }

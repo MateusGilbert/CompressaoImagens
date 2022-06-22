@@ -1,7 +1,7 @@
 #include "header.hpp"
 #include "subdefs2.h"
 
-subbands split_bands(double *pSIMG[], int x, int y, int n_lv=NSTAGES){
+subbands split_bands(double *pSIMG[], int x, int y, int n_lv){
 	subbands bands;
 	int st_x = 0, st_y = 0;
 	int wid_x = x/pow(2, n_lv);
@@ -41,6 +41,50 @@ subbands split_bands(double *pSIMG[], int x, int y, int n_lv=NSTAGES){
 	}
 
 	return bands;
+}
+
+void agg_bands(subbands bands, double *pSIMG[], int x, int y, int n_lv, bool init_p){
+	int st_x = 0, st_y = 0;
+	int wid_x = x/pow(2, n_lv);
+	int wid_y = y/pow(2, n_lv);
+	int n_bands = n_lv*3 + 1;
+
+	//to initialize pSIMG  -- conferir, talvez tirar?
+	if (init_p){
+		int yimg = (int) (y + y/2);
+		int ximg = (int) (x/(2*DCTSIZE))*2*DCTSIZE;
+		for (int i=0; i<yimg; i++)
+			if ((pSIMG[i] = (double *) malloc(ximg*sizeof(double))) == NULL){
+				cout<<"Memory allocation for luminance transform failed at line"<<i<<endl;
+				exit(1);
+			}
+	}
+
+	for (int n=0; n < n_bands; n++){
+		float *band_img = bands.img;
+
+		for (int j=st_y; j<st_y+wid_y; j++)
+			for (int i=st_x; i<st_x+wid_x; i++)
+				pSIMG[j][i] = (double) band_img[(i - st_x)*wid_y + (j - st_y)]
+
+		switch (n % 3){
+			case 1:
+				st_y = 0;
+				st_x += wid_x;
+				break;
+			case 2:
+				st_y += wid_y;
+				break;
+			case 0:
+				st_y += wid_y;
+				st_x = 0;
+				if (n == 0)
+					break;
+			default:
+				wid_x *= 2;
+				wid_y *= 2;
+		}
+	}
 }
 
 subband quantize_band(subband inp, vect_list centroids, int x_fr, int y_fr){
