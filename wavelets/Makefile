@@ -18,6 +18,7 @@ E_OBJS = encode.o $(COM_OBJS) #bit_output.o arithmetic_encode.o adaptive_model.o
 H_OBJS = helper.o $(COM_OBJS)
 
 EXECS = encode eval_cdbook train
+T_EXECS = test_subc eval_q test_q test_pad
 
 all: $(EXECS)
 
@@ -40,16 +41,11 @@ test_subc: $(H_OBJS)
 test_q: aux_quant.o vectorize.o lbg.o $(Q_OBJS) $(COM_OBJS)
 	$(LD) $(LFLAGS) $@ $^
 
+eval_q: eval_quant.o $(Q_OBJS) $(COM_OBJS)
+	$(LD) $(LFLAGS) $@ $^
+
 test_pad: aux_pad.o hand_img.o
 	$(LD) $(LFLAGS) $@ $^
 
-#programs inside other directories
-#vectorize.o: lbg_vq/vectorize.cpp
-#	$(CC) $(CFLAGS) $^ -o $@
-
-#lbg.o: lbg_vq/lbg.cpp
-#	$(CC) $(CFLAGS) $^ -o $@
-
-
 clean:
-	rm -f *.o $(EXECS)
+	rm -f *.o $(EXECS) $(T_EXECS)

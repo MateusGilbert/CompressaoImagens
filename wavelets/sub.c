@@ -1182,7 +1182,8 @@ synthesis(double *pSIMG[], int **Image_out, int xsize, int ysize){
     {
 	 for (x=0;x<(ximg);x++)
 		{
-		 Image_out[y][x] = mpel(subd_round(*(pSIMG[y]+x)));
+		 /*Image_out[y][x] = mpel(subd_round(*(pSIMG[y]+x)));*/
+		 Image_out[y][x] = subd_round(*(pSIMG[y]+x));
 		}
 	}
 

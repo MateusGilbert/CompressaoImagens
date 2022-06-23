@@ -41,7 +41,7 @@ main(int argc, char *argv[]){
 		int len = code_file.length(), n_band=0;
 		for (int i=1; i<len; i++){
 			int alg = (int) code_file[i] - '0';
-			if (alg <= NBANDS)
+			if ((alg >= NBANDS) or (alg < 0))
 				break;
 			n_band = n_band*10 + alg;
 		}
@@ -53,8 +53,13 @@ main(int argc, char *argv[]){
 			double D=0.;
 			double R = log2((double) centroids.size()) / (double) (x_fr*y_fr); //log_2(#codebook)/(tam. bloco)
 			for (string file : test_files){
-				int x=0,y=0;
+				int x=0,y=0,pad_x=0,pad_y=0;
 				int *im_array = op_pgm(x,y,file);
+				vector< string > v_aux;
+				v_aux.push_back(code_file);
+				//check if padding is needed; adds it if it is the case
+				chk_pad(v_aux, im_array, x, y, pad_x, pad_y);
+
 				int **dd_img = im_to_ddot(im_array, x, y);
 				int **dd_dec = init_dd_img(x,y);
 

@@ -45,26 +45,26 @@ inline reg_register split_vects(lbg_aux aux){
 	return reg_reg;
 }
 
-//inline void no_empty_cluster(reg_register reg_reg){
-//	vector< int > aux;
-//	int N_clusters = reg_reg.size();
-//	int top_cluster=0, top_size=0;
-//
-//	for (int i=0; i<N_clusters; i++)
-//		if (reg_reg[i].empty())
-//			aux.push_back(i);
-//		else if (reg_reg[i].size() > (unsigned) top_size){
-//				top_cluster = i;
-//				top_size = reg_reg[i].size();
-//		}
-//
-//	for (auto i: aux){
-//		int idx = rand() % top_size--;
-//		reg_reg[i].push_back(reg_reg[top_cluster][idx]);
-//		reg_reg[top_cluster][idx] = reg_reg[top_cluster].back();
-//		reg_reg[top_cluster].pop_back();
-//	}
-//}
+inline void no_empty_cluster(reg_register reg_reg){
+	vector< int > aux;
+	int N_clusters = reg_reg.size();
+	int top_cluster=0, top_size=0;
+
+	for (int i=0; i<N_clusters; i++)
+		if (reg_reg[i].empty())
+			aux.push_back(i);
+		else if (reg_reg[i].size() > (unsigned) top_size){
+				top_cluster = i;
+				top_size = reg_reg[i].size();
+		}
+
+	for (auto i: aux){
+		int idx = rand() % top_size--;
+		reg_reg[i].push_back(reg_reg[top_cluster][idx]);
+		reg_reg[top_cluster][idx] = reg_reg[top_cluster].back();
+		reg_reg[top_cluster].pop_back();
+	}
+}
 
 inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_size){
 	vect_list centroids;
@@ -89,12 +89,16 @@ inline vect_list up_centroids(vect_list v_train, reg_register reg_reg, int v_siz
 
 void print_centroids(vect_list centroids, int size){
 	for (auto y_i : centroids){
-		cout<<"y_i = [ ";
+		cout<<"y_i = [ "<<endl;;
+		if (y_i == (float *) NULL)
+			cout<<"NULL"<<endl;
 		for (int i=0; i<size; i++)
-			cout<<y_i[i]<<" ";
+			cout<<y_i[i]<<endl;//<<" ";
 		cout<<"]"<<endl;
 	}
 	cout<<endl;
+	char a;
+	cin>>a;
 }
 
 inline bool chk_eq(float *x, float *y, int size){

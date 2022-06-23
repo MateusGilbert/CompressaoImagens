@@ -1,7 +1,7 @@
 #include "missing_header.h"
 #include "header.hpp"
 #include <stdlib.h>
-#include "lbg_vq/header.hpp"
+/*#include "lbg_vq/header.hpp"*/
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -134,7 +134,7 @@ main(int argc, char *argv[]){
 
 	//acrescentar o lbg por banda
 	for (int i=0; i<NBANDS; i++){
-		vect_list codebook = lbg(tr_vects[i], n_cent, x_fr*y_fr, 1e-6);
+		vect_list codebook = lbg(tr_vects[i], n_cent, x_fr*y_fr, 1e-4);//e-6
 		add_null_vec(codebook, x_fr*y_fr);
 		save_codebook(codebook,x_fr,y_fr,dir_names[i] + "/codebook");
 	}

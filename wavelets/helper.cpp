@@ -2,13 +2,13 @@
 #include "header.hpp"
 #include <stdlib.h>
 
-int** init_dd_img(int x, int y){
-	int **dd_img = (int **) malloc(y*sizeof(int*));
-	for (int i=0; i<y; i++)
-		dd_img[i] = (int *) malloc(x*sizeof(int));
-
-	return dd_img;
-}
+//int** init_dd_img(int x, int y){
+//	int **dd_img = (int **) malloc(y*sizeof(int*));
+//	for (int i=0; i<y; i++)
+//		dd_img[i] = (int *) malloc(x*sizeof(int));
+//
+//	return dd_img;
+//}
 
 int
 main(int argc, char *argv[]){
@@ -30,7 +30,7 @@ main(int argc, char *argv[]){
 		/*sub(dd_img, dd_out, dd_dec, x, y);*/
 		/*int **dd_enc = init_dd_img(x,y);*/
 
-		/*int avg = avg_rem(dd_img, x, y);*/
+		double avg = avg_rem(dd_img, x, y);
 		double *sIMG[YIMG];
 		/*wav_analysis(dd_img,sIMG, x, y);*/
 		analysis(dd_img,dd_dec, sIMG, x, y);
@@ -38,7 +38,7 @@ main(int argc, char *argv[]){
 		save_csv(d_img, x, y, file + "d.csv");
 
 		synthesis(sIMG, dd_out, x, y);
-		/*avg_add(dd_out, x, y, avg);*/
+		avg_add(dd_out, x, y, avg);
 		int *r_img = ddot_to_im(dd_out, x, y);
 		save_csv(r_img, x, y, file + ".csv");
 	}

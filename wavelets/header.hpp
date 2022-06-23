@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <random>
 #include <math.h>
+#include "subdefs2.h"
 
 using namespace std;
 
@@ -25,6 +26,8 @@ int* ddot_to_bands(int**, int, int);
 double avg_rem(int**,int,int);//trocar para float?
 void avg_add(int**,int,int,double);
 int* add_padding(int*,int,int,int,int);
+int* rem_padding(int*,int,int,int,int);
+void chk_pad(vector< string >, int*, int&, int&, int&, int&);
 
 int** init_dd_img(int, int);
 

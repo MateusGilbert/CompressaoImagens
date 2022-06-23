@@ -3,49 +3,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-//vect_list read_codebook(string code_file, int &x, int &y){
-//	ifstream file(code_file);
-//	string line;
-//	getline(file,line);
-//	vect_list centroids;
-//
-//	int i=0, n=line.length();
-//	string num;
-//	for (int j=0; j<n; j++){
-//		num="";
-//		if (line[j] == 'x'){
-//			j+=2;
-//			while (line[j] != ' ')
-//				num.push_back(line[j++]);
-//			x = stoi(num);
-//		}
-//		else if (line[j] == 'y'){
-//			j+=2;
-//			while (line[j] != ' ')
-//				num.push_back(line[j++]);
-//			y = stoi(num);
-//		}
-//	}
-//
-//	int N = x*y;
-//	while(getline(file,line)){
-//		int *y_i = new int[N];
-//		line.push_back(',');
-//		i=0;
-//		n=line.length();
-//		num="";
-//		for (int j=0; j<n; j++){
-//			while (line[j] != ',')
-//				num.push_back(line[j++]);
-//			y_i[i++] = stoi(num);
-//			num="";
-//		}
-//		centroids.push_back(y_i);
-//	}
-//
-//	return centroids;
-//}
-
 inline void read_header(FILE* file, int &x, int &y, int &N){
 	char a;
 	string header = "";
@@ -86,12 +43,10 @@ inline void read_header(FILE* file, int &x, int &y, int &N){
 vect_list read_codebook(string code_file, int &x, int &y){
 	FILE *codebook = fopen(code_file.c_str(), "rb");
 	vect_list centroids;
-	/*vector< float* > values;*/
 
 	int N;
 	read_header(codebook,x,y,N);
 
-	/*cout<<"x = "<<x<<"; y = "<<y<<"; N = "<<N<<endl;*/
 	for (int i=0; i<N; i++){
 		float *v = new float[x*y];
 		float f[x*y];
