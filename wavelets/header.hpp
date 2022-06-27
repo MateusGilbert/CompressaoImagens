@@ -32,19 +32,29 @@ void chk_pad(vector< string >, int*, int&, int&, int&, int&);
 int** init_dd_img(int, int);
 
 //hand_bands
-typedef struct band_node{
+typedef struct b_struct{
 	int x, y;
 	float *img;
 } subband;
+typedef struct cb_struct{
+	int x, y, x_fr, y_fr;
+	int *vects;
+} cod_subb;
 typedef vector< subband > subbands;
+typedef vector< cod_subb > cod_subbs;
 subbands split_bands(double*[],int,int,int=NSTAGES);
 subband quantize_band(subband,vect_list,int,int);
+cod_subb quantize_band2(subband,vect_list,int,int);
+subband dec_vects(cod_subb,vect_list);
 void agg_bands(subbands,double*[],int,int,int=NSTAGES,bool=false);
 
 //quantize
 vect_list read_codebook(string, int&, int&);
 double eq_dist2(float*,float*,int);
 float* v_encode(float*,vect_list,int,int,int,int);
+int* v_count(float*,vect_list,int,int,int,int);
+int* v_enc(float*,vect_list,int,int,int,int);
+float* v_dec(int*,vect_list,int,int,int,int);
 
 //encode
 vector< string > get_codebooks(int, vector< string >, string="results.dat");
@@ -53,5 +63,12 @@ vector< string > get_codebooks(int, vector< string >, string="results.dat");
 vect_list vectorize(float*, int, int, int, int);
 vect_list lbg(vect_list, int, int, float=.1);
 void print_centroids(vect_list, int);
+
+//arithmetic coder helper
+vector<int> get_cumfreq(string, string="tracker.txt");
+string get_cdbk_name(int, string="tracker.txt");
+int get_cdbk_id(string, string="tracker.txt");
+void write_header(FILE*, vector< string >, subbands, int, int, int, int, double, string="tracker.txt");
+void read_header(FILE*, vector< string >&, subbands, int&, int&, double&, string="tracker.txt");
 
 #endif

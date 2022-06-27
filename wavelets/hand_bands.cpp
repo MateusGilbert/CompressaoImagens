@@ -99,10 +99,29 @@ subband quantize_band(subband inp, vect_list centroids, int x_fr, int y_fr){
 
 	out.x = inp.x;
 	out.y = inp.y;
-//	for (auto v : centroids)
-//		for (int i=0; i<inp.x*inp.y; i++)
-//			cout<<v[i]<<endl;
 	out.img = v_encode(inp.img, centroids, inp.x, inp.y, x_fr, y_fr);
+
+	return out;
+}
+
+cod_subb quantize_band2(subband inp, vect_list centroids, int x_fr, int y_fr){
+	cod_subb out;
+
+	out.x = inp.x;
+	out.y = inp.y;
+	out.x_fr = x_fr;
+	out.y_fr = y_fr;
+	out.vects = v_enc(inp.img, centroids, inp.x, inp.y, x_fr, y_fr);
+
+	return out;
+}
+
+subband dec_vects(cod_subb vects, vect_list centroids){
+	subband out;
+
+	out.x = vects.x;
+	out.y = vects.y;
+	out.img = v_dec(vects.vects, centroids, vects.x, vects.y, vects.x_fr, vects.y_fr);
 
 	return out;
 }
