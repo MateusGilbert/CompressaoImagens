@@ -94,15 +94,16 @@ void write_header(FILE *f, vector< string > codebooks, cod_subbs bands, int x, i
 		fwrite(&id, sizeof(int), 1, f);
 		fwrite(&bx, sizeof(int), 1, f);
 		fwrite(&by, sizeof(int), 1, f);
+		/*cerr<<id<<" "<<bx<<" "<<by<<" "<<x<<" "<<y<<endl;*/
 	}
 	return;
 }
 
-void read_header(FILE *f, vector< string > &codebooks, subbands &bands, int &x, int &y, int pad_x, int pad_y, double &avg, string trk){
+void read_header(FILE *f, vector< string > &codebooks, subbands &bands, int &x, int &y, int &pad_x, int &pad_y, double &avg, string trk){
 	fread(&x, sizeof(int), 1, f);
 	fread(&y, sizeof(int), 1, f);
-	fwrite(&pad_x, sizeof(int), 1, f);
-	fwrite(&pad_y, sizeof(int), 1, f);
+	fread(&pad_x, sizeof(int), 1, f);
+	fread(&pad_y, sizeof(int), 1, f);
 	fread(&avg, sizeof(double), 1, f);
 	for (int i=0; i<NBANDS; i++){
 		int bx, by, id;
@@ -112,11 +113,13 @@ void read_header(FILE *f, vector< string > &codebooks, subbands &bands, int &x, 
 
 		fread(&bx, sizeof(int), 1, f);
 		fread(&by, sizeof(int), 1, f);
-		subband aux = new subband;
+		subband aux;
 		aux.x = bx;
 		aux.y = by;
-		bands.push_back(aux)
+		bands.push_back(aux);
+		/*cerr<<id<<" "<<bx<<" "<<by<<" "<<x<<" "<<y<<endl;*/
 	}
+
 	return;
 }
 

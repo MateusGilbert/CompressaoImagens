@@ -68,7 +68,7 @@ void print_centroids(vect_list, int);
 vector<int> get_cumfreq(string, string="tracker.txt");
 string get_cdbk_name(int, string="tracker.txt");
 int get_cdbk_id(string, string="tracker.txt");
-void write_header(FILE*, vector< string >, subbands, int, int, int, int, double, string="tracker.txt");
-void read_header(FILE*, vector< string >&, subbands, int&, int&, double&, string="tracker.txt");
+void write_header(FILE*, vector< string >, cod_subbs, int, int, int, int, double, string="tracker.txt");
+void read_header(FILE*, vector< string >&, subbands&, int&, int&, int&, int&, double&, string="tracker.txt");
 
 #endif

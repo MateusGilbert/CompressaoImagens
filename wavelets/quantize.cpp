@@ -131,7 +131,6 @@ int* v_count(float *in_im, vect_list centroids, int x, int y, int x_fr, int y_fr
 }
 
 int* v_enc(float *in_im, vect_list centroids, int x, int y, int x_fr, int y_fr){
-	/*int *v_img = new int[(x / x_fr)*(y / y_fr)];*/
 	int*  v_im = new int[(x / x_fr)*(y / y_fr)];
 
 	int i_v = 0;
@@ -143,7 +142,6 @@ int* v_enc(float *in_im, vect_list centroids, int x, int y, int x_fr, int y_fr){
 				for (int jj=0; jj<x_fr; jj++)
 					v[count++] = in_im[(i+ii)*x + j + jj];
 			v_im[i_v++] = match_vect(v,centroids,x_fr*y_fr);
-			/*int id = match_vect(v,centroids,x_fr*y_fr);*/
 		}
 
 	return v_im;
@@ -156,12 +154,6 @@ float* v_dec(int *v_im, vect_list centroids, int x, int y, int x_fr, int y_fr){
 	int i_vects = 0;
 	for (int i=0; i<=y-y_fr; i += y_fr)
 		for (int j=0; j<=x-x_fr; j += x_fr){
-			/*float *v = new float[x_fr*y_fr];*/
-			/*int count=0;*/
-//			for (int ii=0; ii<y_fr; ii++)
-//				for (int jj=0; jj<x_fr; jj++)
-//					v[count++] = in_im[(i+ii)*x + j + jj];
-//			int id = match_vect(v,centroids,x_fr*y_fr);
 			int id = v_im[i_vects++];
 			float *c = centroids[id];
 			int count=0;

@@ -25,8 +25,11 @@ vector< string > get_codebooks(int lambda, vector< string > directories, string 
 			fread(&D, sizeof(double), 1, res);
 			fread(&R, sizeof(double), 1, res);
 			char aux;
+			bool ignore=false;
 			do{
 				size_t s = fread(&aux, sizeof(char), 1, res);
+				if (aux == '#')
+					ignore=true;
 				if ((aux == '\n') or (s != 1)){
 					if (s != 1)
 						close_file = true;
@@ -34,7 +37,7 @@ vector< string > get_codebooks(int lambda, vector< string > directories, string 
 				}
 				cand_cdbk.push_back(aux);
 			}while(true);
-			if ((R + D/lambda) < best){
+			if ((!ignore) and ((R + D/lambda) < best)){
 				best = R + D/lambda; //conferir este D
 				codebook = cand_cdbk;
 			}
@@ -97,6 +100,7 @@ main(int argc, char *argv[]){
 
 	/*vect_list tr_vects;*/
 	for (auto file : files){
+		cout<<"Encoding "<<file<<"..."<<endl;
 		int x=0,y=0,pad_x=0,pad_y=0;
 		int *im_array = op_pgm(x,y,file);
 		//check if padding is needed; adds it if it is the case
@@ -134,20 +138,23 @@ main(int argc, char *argv[]){
 
 		string outfile = file.substr(0, file.find_last_of('.')) + "_l" + to_string(lambda) + ".dat";
 		FILE *cmp_file = fopen(outfile.c_str(), "wb");
-		write_header(cmp_file, codebooks, cod_subbs, x, y, pad_x, pad_y, avg);
+		write_header(cmp_file, codebooks, v_bands, x, y, pad_x, pad_y, avg);
 
 		start_outputing_bits();
 		start_encoding();
 		for (int i=0; i<NBANDS; i++){
+			cout<<"... #"<<i<<" band..."<<endl;
 			int *v_img = v_bands[i].vects;
-			int n_vects = (x / v_bands[i].x_fr)*(y / v_bands[i].y_fr);
+			int n_vects = (v_bands[i].x / v_bands[i].x_fr)*(v_bands[i].y / v_bands[i].y_fr);
+
 			for (int j=0; j<n_vects; j++)
-				encode_symbol(v_img[j], cum_freqs[i], cmp_file);
+				encode_symbol(v_img[j]+1, cum_freqs[i], cmp_file);
 		}
 
 		done_encoding(cmp_file);
 		done_outputing_bits(cmp_file);
 		fclose(cmp_file);
+		cout<<"... done."<<endl;
 	}
 
 	return 0;
