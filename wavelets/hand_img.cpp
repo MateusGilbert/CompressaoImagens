@@ -86,7 +86,7 @@ int* rem_padding(int *pad_img, int x, int y, int pad_x, int pad_y){
 	int** mat_pad = im_to_ddot(pad_img, x, y);
 	int** mat_img = im_to_ddot(og_img, x-pad_x, y-pad_y);
 
-	for (int i=0; i<y-pad_y; i++)//{
+	for (int i=0; i<y-pad_y; i++)
 		for (int j=0; j<x-pad_x; j++)
 			mat_img[i][j] = mat_pad[i][j];
 
@@ -106,6 +106,25 @@ void save_csv(int *img, int x, int y, string filename){
 	}
 
 	outfile.close();
+
+	return;
+}
+
+void save_pgm(int *img, int x, int y, string filename){
+	ofstream outfile(filename);
+	outfile<<"P5"<<endl<<to_string(x)<<" "<<to_string(y)<<endl<<"255"<<endl;
+	outfile.close();
+
+	FILE *o_file = fopen(filename.c_str(), "ab+");
+	for (int i=0; i<y; i++)
+		for (int j=0; j<x; j++){
+			unsigned char num;
+			num = (unsigned char) img[i*x+j];
+			if (img[i*x+j] < 0)
+				num = 0;
+			fwrite(&num, sizeof(unsigned char), 1, o_file);
+		}
+	fclose(o_file);
 
 	return;
 }

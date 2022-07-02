@@ -1,53 +1,6 @@
 #include "missing_header.h"
 #include "header.hpp"
 #include <stdlib.h>
-
-//inline void ignore_header(FILE *i_file){
-//	char aux;
-//	do{
-//		fread(&aux, sizeof(char), 1, i_file);
-//	}while(aux != '\n');
-//}
-
-//vector< string > get_codebooks(int lambda, vector< string > directories, string outfile){
-//	vector< string > codebooks;
-//
-//	for (auto dir: directories){
-//		string filename = dir + "/" + outfile;
-//		string codebook, cand_cdbk;
-//		double D,R,best=1.7e308;
-//		bool close_file=false;
-//		FILE *res = fopen(filename.c_str(), "rb");
-//
-//		/*getline(file,line);			//ignore header*/
-//		ignore_header(res);
-//		while (!close_file){
-//			cand_cdbk="";
-//			fread(&D, sizeof(double), 1, res);
-//			fread(&R, sizeof(double), 1, res);
-//			char aux;
-//			do{
-//				size_t s = fread(&aux, sizeof(char), 1, res);
-//				if ((aux == '\n') or (s != 1)){
-//					if (s != 1)
-//						close_file = true;
-//					break;
-//				}
-//				cand_cdbk.push_back(aux);
-//			}while(true);
-//			if ((R + D/lambda) < best){
-//				best = R + D/lambda; //conferir este D
-//				codebook = cand_cdbk;
-//			}
-//		}
-//		fclose(res);
-//		codebooks.push_back(codebook);
-//	}
-//
-//	return codebooks;
-//}
-
-
 int
 main(int argc, char *argv[]){
 	if (argc < NBANDS+2){
@@ -61,14 +14,7 @@ main(int argc, char *argv[]){
 	for (int i=1; i<argc; i++)
 		cli_input.push_back(argv[i]);
 
-//	bool n_lamb = false;
-//	int lambda;
 	for (auto inp: cli_input){
-//		if (n_lamb){
-//			n_lamb = false;
-//			lambda = stoi(inp);
-//		}
-//		else{
 		string term = inp.substr(inp.find_last_of(".") + 1);
 		if (term == "dat")
 			files.push_back(inp);
@@ -78,7 +24,6 @@ main(int argc, char *argv[]){
 			cout<<"Wrong file format!!! "<<inp<<" will be ignored."<<endl;
 	}
 
-	/*vect_list tr_vects;*/
 	for (auto file : files){
 		cout<<"Decoding "<<file<<"..."<<endl;
 		vector< string > codebooks;
@@ -151,7 +96,8 @@ main(int argc, char *argv[]){
 		if ((pad_x != 0) or (pad_y != 0))
 			r_img = rem_padding(r_img, x, y, pad_x, pad_y);
 		string saveat = file.substr(0,file.find_last_of('.')+1);
-		save_csv(r_img, x-pad_x, y-pad_y, saveat + "csv");
+		/*save_csv(r_img, x-pad_x, y-pad_y, saveat + "csv");*/
+		save_pgm(r_img, x-pad_x, y-pad_y, saveat + "pgm");
 	}
 
 	return 0;
