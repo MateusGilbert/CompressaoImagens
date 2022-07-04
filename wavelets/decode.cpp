@@ -96,7 +96,7 @@ main(int argc, char *argv[]){
 		if ((pad_x != 0) or (pad_y != 0))
 			r_img = rem_padding(r_img, x, y, pad_x, pad_y);
 		string saveat = file.substr(0,file.find_last_of('.')+1);
-		/*save_csv(r_img, x-pad_x, y-pad_y, saveat + "csv");*/
+		save_csv(r_img, x-pad_x, y-pad_y, saveat + "csv");
 		save_pgm(r_img, x-pad_x, y-pad_y, saveat + "pgm");
 	}
 

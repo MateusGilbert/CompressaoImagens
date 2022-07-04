@@ -1,6 +1,6 @@
 #include "header.hpp"
 
-typedef vector< vector < int > > reg_register;//conferir
+typedef vector< vector < int > > reg_register;
 
 typedef struct{
 	int *cent_ind, size, n_train, n_cent;
@@ -114,7 +114,7 @@ inline void make_uniq(vect_list vects, int dim){
 	for (auto *y_i : vects)
 		for (int j=i++; j<n; j++)
 			if (chk_eq(y_i,vects[j],dim)){
-				int pert = rand() % 2;
+				float pert = (float) rand() % 2;
 				int pos = rand() % dim;						//selects a position
 				if (pert == 0)
 					pert = -.5;
@@ -139,7 +139,7 @@ inline vect_list init_cent(vect_list vects, int n_cent, int dim){
 			mt19937{random_device{}()});
 
 	for (auto y_i : centroids){
-		int pert = rand() % 2;
+		float pert = (float) rand() % 2;
 		int pos = rand() % dim;
 		if (pert == 0)
 			pert = -.5;
@@ -192,8 +192,6 @@ vect_list lbg(vect_list v_train, int N, int size, float eps){
 
 	//5
 	centroids = up_centroids(v_train, reg_reg, size);
-//	print_centroids(centroids,size);
-//	cout<<endl;
 	goto main_loop;
 }
 

@@ -24,12 +24,13 @@ main(int argc, char *argv[]){
 		double *sIMG[YIMG];
 		analysis(dd_img,dd_dec, sIMG, x, y);
 		int *d_img = ddot_to_im(dd_dec, x, y);
-		save_csv(d_img, x, y, file + "d.csv");
+		/*save_csv(d_img, x, y, file + "d.csv");*/
+		save_pgm(d_img, x, y, file + "d.pgm");
 
 		synthesis(sIMG, dd_out, x, y);
 		avg_add(dd_out, x, y, avg);
 		int *r_img = ddot_to_im(dd_out, x, y);
-		save_csv(r_img, x, y, file + ".csv");
+//		save_csv(r_img, x, y, file + ".csv");
 		save_pgm(r_img, x, y, file + ".pgm");
 	}
 
